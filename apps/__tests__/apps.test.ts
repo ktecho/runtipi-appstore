@@ -23,9 +23,12 @@ interface AppConfig {
   available: boolean;
   form_fields?: FormField[];
   supported_architectures: string[];
+  dynamic_config: boolean;
 }
 
 const networkExceptions = [
+  "matter-server",
+  "mdns-repeater",
   "pihole",
   "tailscale",
   "homeassistant",
@@ -260,9 +263,31 @@ describe("App configs", () => {
 
           expect(dockerCompose.services[app.id].networks).toBeDefined();
           expect(dockerCompose.services[app.id].networks).toContain(
-            "tipi_main_network"
+            "tipi_main_network",
           );
         }
+      });
+    });
+  });
+
+  describe('Each app should have label runtipi.managed=true', () => {
+    const apps = getAppConfigs();
+    apps.forEach((app) => {
+      test(app.id, () => {
+        const dockerComposeFile = fs.readFileSync(`./apps/${app.id}/docker-compose.yml`).toString();
+
+        const dockerCompose: any = jsyaml.load(dockerComposeFile);
+
+        const services = dockerCompose.services;
+        const labelDoesNotExist = Object.keys(services).some((service) => {
+          const labels = services[service].labels || {};
+          if (labels) {
+            return !labels["runtipi.managed"];
+          }
+          return true;
+        });
+
+        expect(labelDoesNotExist).toBe(false);
       });
     });
   });
