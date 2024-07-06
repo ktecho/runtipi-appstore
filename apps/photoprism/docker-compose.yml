@@ -10,7 +10,8 @@ services:
     ports:
       - "${APP_PORT}:2342"
     environment:
-      PHOTOPRISM_INIT: "ffmpeg"
+      PHOTOPRISM_INIT: "intel"
+      PHOTOPRISM_FFMPEG_ENCODER: "intel"
       PHOTOPRISM_ADMIN_PASSWORD: ${PHOTOPRISM_ADMIN_PASSWORD}
       PHOTOPRISM_SITE_URL: "${APP_PROTOCOL:-http}://${APP_DOMAIN}/"
       PHOTOPRISM_ORIGINALS_LIMIT: 5000
@@ -36,6 +37,8 @@ services:
       PHOTOPRISM_DATABASE_USER: "photoprism"
       PHOTOPRISM_DATABASE_PASSWORD: "${DB_PASSWORD}"
       PHOTOPRISM_SITE_CAPTION: "AI-Powered Photos App"
+    devices:
+      - "/dev/dri:/dev/dri"
     working_dir: "/photoprism"
     volumes:
       - "${ROOT_FOLDER_HOST}/media/data/images:/photoprism/originals"
