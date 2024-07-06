@@ -10,6 +10,7 @@ services:
     ports:
       - "${APP_PORT}:2342"
     environment:
+      PHOTOPRISM_INIT: "ffmpeg"
       PHOTOPRISM_ADMIN_PASSWORD: ${PHOTOPRISM_ADMIN_PASSWORD}
       PHOTOPRISM_SITE_URL: "${APP_PROTOCOL:-http}://${APP_DOMAIN}/"
       PHOTOPRISM_ORIGINALS_LIMIT: 5000
